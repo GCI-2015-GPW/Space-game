@@ -1,3 +1,12 @@
 [submodule "ECS"]
 	path = ECS
 	url = https://github.com/GuapoTaco/Modular-ECS
+[submodule "dependencies/hana"]
+	path = dependencies/hana
+	url = https://github.com/boostorg/hana
+[submodule "dependencies/Modular-ECS"]
+	path = dependencies/Modular-ECS
+	url = https://github.com/GuapoTaco/Modular-ECS
+[submodule "dependencies/ECS"]
+	path = dependencies/ECS
+	url = https://github.com/GuapoTaco/Modular-ECS
