@@ -60,8 +60,8 @@ void mainloop(){
 }
 
 int main() {
-    InitOpenGL();
-    init_SDL();    
+    init_SDL();
+    InitOpenGL();    
 
     
 
