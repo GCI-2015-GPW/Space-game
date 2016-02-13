@@ -21,8 +21,9 @@ int main() {
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         WIN_SIZE,
-        SDL_WINDOW_OPENGL
+        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
     );
+    SDL_MaximizeWindow(window);
     SDL_Renderer *sdlRenderer = SDL_CreateRenderer(
         window,
         -1,
