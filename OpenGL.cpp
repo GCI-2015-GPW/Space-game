@@ -1,6 +1,7 @@
 #include <iostream>
 #include <SDL2/SDL.h>
-#include <OpenGL.h>
+
+#include "OpenGL.h"
 
 using namespace std;
 
