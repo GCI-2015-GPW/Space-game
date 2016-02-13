@@ -8,7 +8,7 @@ using namespace std;
 int main() {
 
     if(SDL_Init(SDL_INIT_VIDEO) < 0){
-        cerr << "Fallo al iniciar el video: " << SDL_GetError()  << endl;
+        cerr << "Unable to initialize SDL: " << SDL_GetError()  << endl;
         exit(1);
     }
 
@@ -18,9 +18,17 @@ int main() {
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-    SDL_Window *window = SDL_CreateWindow("Space Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIN_SIZE, SDL_WINDOW_OPENGL);
-    SDL_Renderer *sdlRenderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    SDL_SetRenderDrawColor(sdlRenderer, 255, 255, 255, 255);
+    SDL_Window *window = SDL_CreateWindow(
+        "Space Game",
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        WIN_SIZE,
+        SDL_WINDOW_OPENGL
+    );
+    SDL_Renderer *sdlRenderer = SDL_CreateRenderer(
+        window,
+        -1,
+        SDL_RENDERER_ACCELERATED);
 
     SDL_Event event;
     bool running = true;
