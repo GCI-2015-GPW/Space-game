@@ -9,7 +9,11 @@ class Texture
 public:
     
     Texture(const Texture& other) = delete;
-    Texture(Texture&& other) = default;
+    Texture(Texture&& other)
+    {
+        name = other.name;
+        other.name = 0;
+    }
     
     ~Texture();
     

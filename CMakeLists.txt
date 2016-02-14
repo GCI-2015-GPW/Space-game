@@ -22,6 +22,8 @@ set(Space_SOURCES
 	src/Texture.cpp
 	src/Texture.h
 	src/lodepng.cpp
+	src/Shader.cpp
+	src/Shader.h
 )
 
 add_executable(game ${Space_SOURCES})
