@@ -11,4 +11,8 @@
 
 void InitOpenGL();
 
+void resize(int, int);
+
+GLuint Surface2Texture(SDL_Surface*);
+
 #endif
