@@ -1,6 +1,7 @@
 #ifndef OPENGL_H
 #define OPENGL_H
 
+#define GL_GLEXT_PROTOTYPES
 #ifdef __APPLE__
 #  include <OpenGL/gl.h>
 #  include <OpenGL/glu.h>
@@ -14,7 +15,5 @@
 void InitOpenGL();
 
 void resize(int, int);
-
-GLuint Surface2Texture(SDL_Surface*);
 
 #endif

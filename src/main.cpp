@@ -8,19 +8,26 @@
 #define WIN_SIZE 300, 300
 
 SDL_Window* window = NULL;
-SDL_Renderer* sdlRenderer = NULL;
+SDL_GLContext maincontext;
 SDL_Texture *texture = NULL;
+
+GLuint VertexArrayID;
+static const GLfloat g_vertex_buffer_data[] = {
+    -1.0f, -1.0f, 0.0f,
+    1.0f, -1.0f, 0.0f,
+    0.0f,  1.0f, 0.0f,
+};
+GLuint vertexbuffer;
 
 SDL_Event event;
 bool running = true;
-
-GLuint top, bottom, left, right, front, back;
 
 void init_SDL(){
     if(SDL_Init(SDL_INIT_VIDEO) < 0){
         std::cerr << "Unable to initialize SDL: " << SDL_GetError() << std::endl;
         exit(1);
     }
+
     window = SDL_CreateWindow(
         "Space Game",
         SDL_WINDOWPOS_UNDEFINED,
@@ -28,11 +35,10 @@ void init_SDL(){
         WIN_SIZE,
         SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
     );
+
     SDL_MaximizeWindow(window);
-    sdlRenderer = SDL_CreateRenderer(
-        window,
-        -1,
-        SDL_RENDERER_ACCELERATED);
+
+    maincontext = SDL_GL_CreateContext(window);
 }
 
 void cleanup(){
@@ -55,60 +61,23 @@ void mainloop(){
             }
         }
     }
-    
-    auto tex = Texture::FromPNGFile("Cubes/1.png");
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glLoadIdentity();
-    glTranslatef(0.0f, 0.0f, -2.0f);
-    //glRotatef(ang++, 0.0f, 1.0f, 0.0f);
-    //glRotatef(45, 1.0f, 0.0f, 0.0f);
-
-    glBegin(GL_QUADS);
-        glColor3f(1.0f, 1.0f, 1.0f);
-        glBindTexture(GL_TEXTURE_2D, front);
-        glTexCoord2f(1, 1);
-        glVertex3f(0.5, 0.5, 0.5);
-        glTexCoord2f(0, 1);
-        glVertex3f(-0.5, 0.5, 0.5);
-        glTexCoord2f(0, 0);
-        glVertex3f(-0.5, -0.5, 0.5);
-        glTexCoord2f(1, 0);
-        glVertex3f(0.5, -0.5, 0.5);
-        glBindTexture(GL_TEXTURE_2D, 0);
-
-        glColor3f(0.0f, 1.0f, 0.0f);
-        glVertex3f(0.5, -0.5, -0.5);
-        glVertex3f(-0.5, -0.5, -0.5);
-        glVertex3f(-0.5, 0.5, -0.5);
-        glVertex3f(0.5, 0.5, -0.5);
-
-        glColor3f(0.0f, 0.0f, 1.0f);
-        glVertex3f(-0.5, -0.5, -0.5);
-        glVertex3f(-0.5, -0.5, 0.5);
-        glVertex3f(-0.5, 0.5, 0.5);
-        glVertex3f(-0.5, 0.5, -0.5);
-
-        glColor3f(1.0f, 1.0f, 0.0f);
-        glVertex3f(0.5, 0.5, -0.5);
-        glVertex3f(0.5, 0.5, 0.5);
-        glVertex3f(0.5, -0.5, 0.5);
-        glVertex3f(0.5, -0.5, -0.5);
-
-        glColor3f(1.0f, 0.0f, 1.0f);
-        glVertex3f(0.5, -0.5, -0.5);
-        glVertex3f(0.5, -0.5, 0.5);
-        glVertex3f(-0.5, -0.5, 0.5);
-        glVertex3f(-0.5, -0.5, -0.5);
-
-        glColor3f(0.0f, 1.0f, 1.0f);
-        glVertex3f(-0.5, 0.5, -0.5);
-        glVertex3f(-0.5, 0.5, 0.5);
-        glVertex3f(0.5, 0.5, 0.5);
-        glVertex3f(0.5, 0.5, -0.5);
-    glEnd();
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    glVertexAttribPointer(
+        0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+        3,                  // size
+        GL_FLOAT,           // type
+        GL_FALSE,           // normalized?
+        0,                  // stride
+        (void*)0            // array buffer offset
+    );
+    glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
+    glDisableVertexAttribArray(0);
 
     SDL_GL_SwapWindow(window);
 
@@ -121,6 +90,11 @@ void mainloop(){
 
 int main() {
     init_SDL();
+    glGenVertexArrays(1, &VertexArrayID);
+    glBindVertexArray(VertexArrayID);
+    glGenBuffers(1, &vertexbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
     InitOpenGL();
 
     int w, h;
