@@ -3,7 +3,6 @@
 #include <SDL_image.h>
 #include "OpenGL.h"
 
-#include "SceneManager.h"
 
 #define FPS 30
 #define WIN_SIZE 300, 300
