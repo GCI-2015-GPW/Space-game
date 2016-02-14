@@ -72,7 +72,6 @@ void mainloop(){
         }
         if(event.type == SDL_WINDOWEVENT) {
             if(event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                resize(event.window.data1, event.window.data2);
                 glViewport(0, 0, event.window.data1, event.window.data2);
             }
         }
@@ -140,12 +139,9 @@ int main() {
     
     
     
-    InitOpenGL();
-
     int w, h;
     SDL_GetWindowSize(window, &w, &h);
-
-    resize(w, h);
+    glViewport(0, 0, w, h);
 
     while(running) {
         mainloop();

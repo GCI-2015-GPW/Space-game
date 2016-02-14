@@ -15,8 +15,4 @@
 
 #include <SDL.h>
 
-void InitOpenGL();
-
-void resize(int, int);
-
 #endif

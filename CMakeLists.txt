@@ -17,7 +17,6 @@ include_directories(src)
 
 set(Space_SOURCES
 	src/main.cpp
-	src/OpenGL.cpp
 	src/OpenGL.h
 	src/Texture.cpp
 	src/Texture.h
