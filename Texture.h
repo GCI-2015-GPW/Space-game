@@ -11,6 +11,8 @@ public:
     Texture(const Texture& other) = delete;
     Texture(Texture&& other) = default;
     
+    ~Texture();
+    
     Texture& operator=(const Texture& other) = delete;
     Texture& operator=(Texture&& other)
     {
