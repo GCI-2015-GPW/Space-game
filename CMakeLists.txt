@@ -15,14 +15,15 @@ include_directories(${GLM_INCLUDE_DIRS})
 include_directories(${SDL2_INCLUDE_DIR})
 include_directories(${OPENGL_INCLUDE_DIR})
 include_directories(${SDL2IMAGE_INCLUDE_DIRS})
+include_directories(src)
 
 set(Space_SOURCES
-	main.cpp
-	OpenGL.cpp
-	OpenGL.h
-	Texture.cpp
-	Texture.h
-	lodepng.cpp
+	src/main.cpp
+	src/OpenGL.cpp
+	src/OpenGL.h
+	src/Texture.cpp
+	src/Texture.h
+	src/lodepng.cpp
 )
 
 add_executable(game ${Space_SOURCES})
