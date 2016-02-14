@@ -3,6 +3,7 @@
 #include <SDL_image.h>
 #include "OpenGL.h"
 
+#include "Texture.h"
 
 #define FPS 30
 #define WIN_SIZE 300, 300
@@ -55,6 +56,8 @@ void mainloop(){
             }
         }
     }
+    
+    auto tex = Texture::FromPNGFile("Cubes/1.png");
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

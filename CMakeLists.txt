@@ -19,6 +19,10 @@ include_directories(${SDL2IMAGE_INCLUDE_DIRS})
 set(Space_SOURCES
 	main.cpp
 	OpenGL.cpp
+	OpenGL.h
+	Texture.cpp
+	Texture.h
+	lodepng.cpp
 )
 
 add_executable(game ${Space_SOURCES})

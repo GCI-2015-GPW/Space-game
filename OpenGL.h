@@ -9,6 +9,8 @@
 #  include <GL/glu.h>
 #endif/*__APPLE__*/
 
+#include <SDL.h>
+
 void InitOpenGL();
 
 void resize(int, int);
