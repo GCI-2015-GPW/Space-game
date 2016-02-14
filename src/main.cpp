@@ -1,6 +1,5 @@
 #include <iostream>
 #include <SDL.h>
-#include <SDL_image.h>
 #include "OpenGL.h"
 
 #include "Texture.h"
@@ -128,67 +127,6 @@ int main() {
     SDL_GetWindowSize(window, &w, &h);
 
     resize(w, h);
-
-    int rmask, gmask, bmask, amask;
-
-    #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-        rmask = 0xFF000000;
-        gmask = 0x00FF0000;
-        bmask = 0x0000FF00;
-        amask = 0x000000FF;
-    #else
-        rmask = 0x000000FF;
-        gmask = 0x0000FF00;
-        bmask = 0x00FF0000;
-        amask = 0xFF000000;
-    #endif
-
-    SDL_Surface *surface = SDL_CreateRGBSurface(0, 64, 64, 32,
-                                   rmask, gmask, bmask, amask);
-
-    if(surface == NULL) {
-        std::cerr << "CreateRGBSurface failed: " << SDL_GetError() << std::endl;
-        exit(1);
-    }
-
-    SDL_Surface *image = IMG_Load("Cubes/1.png");
-    if(!image) {
-        std::cerr << "Load image failed: " << IMG_GetError() << std::endl;
-        exit(1);
-    }
-
-    SDL_Rect rect;
-
-    rect.x = 0;
-    rect.y = 0;
-    rect.w = 64;
-    rect.h = 64;
-
-    SDL_BlitSurface(image, &rect, surface, NULL);
-    top = Surface2Texture(surface);
-
-    rect.x = 64;
-    SDL_BlitSurface(image, &rect, surface, NULL);
-    bottom = Surface2Texture(surface);
-
-    rect.x = 64*2;
-    SDL_BlitSurface(image, &rect, surface, NULL);
-    left = Surface2Texture(surface);
-
-    rect.x = 64*3;
-    SDL_BlitSurface(image, &rect, surface, NULL);
-    right = Surface2Texture(surface);
-
-    rect.x = 64*4;
-    SDL_BlitSurface(image, &rect, surface, NULL);
-    front = Surface2Texture(surface);
-
-    rect.x = 64*5;
-    SDL_BlitSurface(image, &rect, surface, NULL);
-    back = Surface2Texture(surface);
-
-    SDL_FreeSurface(surface);
-    SDL_FreeSurface(image);
 
     while(running) {
         mainloop();
