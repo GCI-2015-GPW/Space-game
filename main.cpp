@@ -2,6 +2,8 @@
 #include <SDL.h>
 #include "OpenGL.h"
 
+#include "SceneManager.h"
+
 using namespace std;
 
 #define FPS 30
