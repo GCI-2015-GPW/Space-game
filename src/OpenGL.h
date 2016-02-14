@@ -3,6 +3,9 @@
 
 #define GL_GLEXT_PROTOTYPES
 #ifdef __APPLE__
+#   define glGenVertexArrays glGenVertexArraysAPPLE
+#   define glBindVertexArrays glBindVertexArraysAPPLE
+#   define glDeleteVertexArrays glDeleteVertexArraysAPPLE
 #  include <OpenGL/gl.h>
 #  include <OpenGL/glu.h>
 #else
