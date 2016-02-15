@@ -1,4 +1,4 @@
-#version 150
+
 
 attribute vec3 vertLocIn;
 
