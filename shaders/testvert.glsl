@@ -1,6 +1,6 @@
 #version 150
 
-in vec3 vertLocIn;
+attribute vec3 vertLocIn;
 
 void main()
 {
