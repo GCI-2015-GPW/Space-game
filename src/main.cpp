@@ -43,7 +43,7 @@ void init_SDL(){
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetSwapInterval(1);
-
+    
     window = SDL_CreateWindow(
         "Space Game",
         SDL_WINDOWPOS_UNDEFINED,

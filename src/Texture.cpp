@@ -24,9 +24,7 @@ Texture::~Texture()
 
 Texture Texture::FromDDSFile(const std::string& path)
 {
-    
-    using namespace std::literals;
-    
+
     unsigned char header[124];
 
     /* try to open the file */
@@ -65,7 +63,7 @@ Texture Texture::FromDDSFile(const std::string& path)
     case FOURCC_DXT1: format = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT; break;
     case FOURCC_DXT3: format = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT; break;
     case FOURCC_DXT5: format = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT; break;
-    default: free(buffer); throw std::logic_error("Invalid format: "s + boost::lexical_cast<std::string>(fourCC));
+    default: free(buffer); throw std::logic_error("Invalid format: " + boost::lexical_cast<std::string>(fourCC));
     }
 
     // Create one OpenGL texture
@@ -97,14 +95,12 @@ Texture Texture::FromDDSFile(const std::string& path)
 
 Texture Texture::FromPNGFile(const std::string& path)
 {
-    using namespace std::literals;
-    
     glm::uvec2 size;
     
     std::vector<GLubyte> buffer;
     if(int err = lodepng::decode(buffer, size.x, size.y, path, LCT_RGBA, 8) != 0)
     {
-        throw std::runtime_error("Error loading file + "s + path + + " Error: " + lodepng_error_text(err));
+        throw std::runtime_error("Error loading file + " + path + + " Error: " + lodepng_error_text(err));
     }
     
     GLuint textureID;

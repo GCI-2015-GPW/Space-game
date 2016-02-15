@@ -28,7 +28,7 @@ set(Space_SOURCES
 add_executable(game ${Space_SOURCES})
 
 target_compile_features(game PUBLIC
-    cxx_variable_templates
+    cxx_defaulted_functions
 )
 
 target_link_libraries(game ${OPENGL_LIBRARIES} ${SDL2_LIBRARY})
