@@ -5,8 +5,6 @@
 #include <cstdio>
 #include <string>
 
-#include <boost/lexical_cast.hpp>
-
 #include "lodepng.h"
 
 #include <glm/vec2.hpp>
@@ -63,7 +61,7 @@ Texture Texture::FromDDSFile(const std::string& path)
     case FOURCC_DXT1: format = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT; break;
     case FOURCC_DXT3: format = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT; break;
     case FOURCC_DXT5: format = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT; break;
-    default: free(buffer); throw std::logic_error("Invalid format: " + boost::lexical_cast<std::string>(fourCC));
+    default: free(buffer); throw std::logic_error("Invalid DDS format.");
     }
 
     // Create one OpenGL texture
