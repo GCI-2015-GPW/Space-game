@@ -1,9 +1,8 @@
-#version 300 es
+#version 150
 
 
-precision highp float;
 
-in vec3 vertLocIn;
+attribute vec3 vertLocIn;
 
 void main()
 {
