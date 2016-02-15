@@ -1,9 +1,12 @@
-#version 150
+#version 300 es
 
-attribute vec3 vertLocIn;
+
+precision highp float;
+
+in vec3 vertLocIn;
 
 void main()
 {
     gl_Position.xyz = vertLocIn;
-    gl_Position.w = 1.f;
+    gl_Position.w = 1.0;
 }
