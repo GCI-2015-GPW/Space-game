@@ -1,11 +1,11 @@
-#version 100
+#version 330 core
 
 
 
-attribute vec3 vertLocIn;
+layout(location = 0) in vec3 vertLocIn;
 
 void main()
 {
     gl_Position.xyz = vertLocIn;
-    gl_Position.w = 1.0;
+    gl_Position.z = 1.f;
 }

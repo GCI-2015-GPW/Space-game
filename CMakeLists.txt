@@ -6,23 +6,19 @@ set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/cmake;")
 
 
 find_package(OpenGL REQUIRED)
-find_package(SDL2 REQUIRED)
-find_package(glm REQUIRED)
+find_package(PkgConfig REQUIRED)
+find_package(GLEW REQUIRED)
+
+pkg_search_module(GLFW REQUIRED glfw3)
 
 
-include_directories(${GLM_INCLUDE_DIRS})
-include_directories(${SDL2_INCLUDE_DIR})
+include_directories(${GLFW_INCLUDE_DIRS})
+include_directories(${GLEW_INCLUDE_DIRS})
 include_directories(${OPENGL_INCLUDE_DIR})
 include_directories(src)
 
 set(Space_SOURCES
 	src/main.cpp
-	src/OpenGL.h
-	src/Texture.cpp
-	src/Texture.h
-	src/lodepng.cpp
-	src/Shader.cpp
-	src/Shader.h
 )
 
 add_executable(game ${Space_SOURCES})
@@ -31,4 +27,4 @@ target_compile_features(game PUBLIC
     cxx_defaulted_functions
 )
 
-target_link_libraries(game ${OPENGL_LIBRARIES} ${SDL2_LIBRARY})
+target_link_libraries(game ${OPENGL_LIBRARIES} ${GLFW_LIBRARIES} ${GLEW_LIBRARIES})

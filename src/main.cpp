@@ -1,162 +1,187 @@
+
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
 #include <iostream>
 #include <fstream>
 
-#include <SDL.h>
-#include "OpenGL.h"
+GLFWwindow* window;
+GLuint vertexArray;
+GLuint vertexLocBuffer;
+GLuint program;
 
-#include "Texture.h"
-#include "Shader.h"
-
-#define FPS 30
-#define WIN_SIZE 300, 300
-
-SDL_Window* window = NULL;
-SDL_GLContext maincontext;
-SDL_Texture *texture = NULL;
-
-GLuint VertexArrayID;
-static const GLfloat g_vertex_buffer_data[] = {
-    -1.0f, -1.0f, 0.0f,
-    1.0f, -1.0f, 0.0f,
-    0.0f,  1.0f, 0.0f,
-};
-
-GLuint vertexbuffer;
-Shader program;
-
-SDL_Event event;
-bool running = true;
-
-void init_SDL(){
-    if(SDL_Init(SDL_INIT_VIDEO) < 0){
-        std::cerr << "Unable to initialize SDL: " << SDL_GetError() << std::endl;
-        exit(1);
+int main()
+{
+    // init glfw
+    if(int err = glfwInit() == 0)
+    {
+        std::cerr << "Failed to initalize glfw with error code: " << err << std::endl;
+        std::terminate();
     }
+        
     
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE); 
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    
+    // set glfw hints
+    /////////////////
+    
+    // context version
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    
+    // MSAA 
+    glfwWindowHint(GLFW_SAMPLES, 8);
+    
+    // To make MacOS happy
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); 
 
-    window = SDL_CreateWindow(
-        "Space Game",
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        WIN_SIZE,
-        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
-    );
+    // use core profile
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    
+    
+    // create the window
+    window = glfwCreateWindow(1280, 720, "Space! I'm in space!", nullptr, nullptr);
     if(!window)
     {
-        std::cout << SDL_GetError();
+        std::cerr << "Window creation failed!" << std::endl;
         std::terminate();
     }
     
-    SDL_MaximizeWindow(window);
-
-    maincontext = SDL_GL_CreateContext(window);
-    if(!maincontext)
+    // make this thread control the window
+    glfwMakeContextCurrent(window);
+    
+    // use core profile
+    glewExperimental = true;
+    
+    // init GLEW (loads the opengl functions)
+    if (int err = glewInit() != GLEW_OK)
     {
-        std::cout << SDL_GetError();
+        std::cerr << "Error initalizing glew: " << glewGetErrorString(err) << std::endl;
         std::terminate();
     }
-}
-
-void cleanup(){
-    SDL_DestroyWindow(window);
-    window = NULL;
-    SDL_Quit();
-}
-
-void mainloop(){
-    int time = SDL_GetTicks();
-
-    SDL_PumpEvents();
-    while(SDL_PollEvent(&event)) {
-        if(event.type == SDL_QUIT) {
-            running = false;
-        }
-        if(event.type == SDL_WINDOWEVENT) {
-            if(event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                glViewport(0, 0, event.window.data1, event.window.data2);
-            }
-        }
-    }
-
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glUseProgram(program.name);
     
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glVertexAttribPointer(
-        0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-        3,                  // size
-        GL_FLOAT,           // type
-        GL_FALSE,           // normalized?
-        0,                  // stride
-        (void*)0            // array buffer offset
-    );
-    glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
-    glDisableVertexAttribArray(0);
-
-    SDL_GL_SwapWindow(window);
-
-    int ftime = SDL_GetTicks() - time;
-    int wait = (1000 / FPS) - ftime;
-    if(wait >= 0) {
-        SDL_Delay(wait);
-    }
-}
-
-int main() {
-    init_SDL();
-    glGenVertexArrays(1, &VertexArrayID);
-    glBindVertexArray(VertexArrayID);
-    glGenBuffers(1, &vertexbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+    // init opengl resources
+    ////////////////////////
     
-    // load source
-    auto loadSource = [](const std::string& path)
+    glClearColor(.3f, .3f, .3f, 1.f);
+    
+    // vertex array
+    glGenVertexArrays(1, &vertexArray);
+    glBindVertexArray(vertexArray);
+    
+    
+    // make shaders
+    
+    // load shader source
+    auto loadFile = [](const std::string& path)
+    {
+        std::ifstream file{path};
+        
+        std::string ret;
+        std::string line;
+        
+        if(file.is_open())
         {
-            std::string ret;
-            
-            std::string line;
-            
-            std::ifstream file{path};
-            
-            if(file)
+            while(std::getline(file, line))
             {
-                while(std::getline(file, line))
-                {
-                    ret.append(line);
-                    ret.push_back('\n');
-                }
+                ret.append(line);
+                ret.push_back('\n');
             }
-            
-            return ret;
-        };
-    std::string vertexSoure = loadSource("shaders/testvert.glsl");
-    std::string fragSource = loadSource("shaders/testfrag.glsl");
-    try {
-        program = Shader{vertexSoure, fragSource};
-    } catch(const std::exception& ex)
+        }
+        else
+        {
+            std::cout << "Warning: cannot open file: " << path << std::endl;
+        }
+        return ret;
+        
+    };
+    std::string vertexSource = loadFile("shaders/testvert.glsl");
+    std::string fragSource = loadFile("shaders/testfrag.glsl");
+    
+    // generate names
+    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    GLuint fragShader = glCreateShader(GL_FRAGMENT_SHADER);
+    if(!vertexShader || !fragShader)
     {
-        std::cout << ex.what();
-        std::terminate();
+        throw std::runtime_error("Error: couldn't make a shader!");
     }
     
     
-    int w, h;
-    SDL_GetWindowSize(window, &w, &h);
-    glViewport(0, 0, w, h);
-
-    while(running) {
-        mainloop();
-    }
-
-    cleanup();
+    // insert the source
+    const char* vertSourceCStr = vertexSource.c_str();
+    glShaderSource(vertexShader, 1, &vertSourceCStr, nullptr);
     
-    return 0;
+    const char* fragSourceCStr = fragSource.c_str();
+    glShaderSource(fragShader, 1, &fragSourceCStr, nullptr);
+    
+    // compile 
+    glCompileShader(vertexShader);
+    glCompileShader(fragShader);
+    
+    // make sure it compiled correctly
+    GLint infoLogLength = 0;
+    glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &infoLogLength);
+    if(infoLogLength > 1) 
+    {
+        auto message = std::string(infoLogLength + 1, ' ');
+        glGetShaderInfoLog(vertexShader, infoLogLength, nullptr, &message[0]);
+        std::cout << "Error: could not compile vertex shader: " << message;
+    }
+    
+    glGetShaderiv(fragShader, GL_INFO_LOG_LENGTH, &infoLogLength);
+    if(infoLogLength > 1) 
+    {
+        auto message = std::string(infoLogLength + 1, ' ');
+        glGetShaderInfoLog(fragShader, infoLogLength, nullptr, &message[0]);
+        std::cout << "Error: could not compile fragment shader: " << message;
+    }
+    
+    // link into a program
+    program = glCreateProgram();
+    glAttachShader(program, vertexShader);
+    glAttachShader(program , fragShader);
+    glLinkProgram(program);
+    
+    // make sure it linked correctly
+    glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLogLength);
+    if (infoLogLength > 1)
+    {
+        auto message = std::string(infoLogLength + 1, ' ');
+        glGetProgramInfoLog(program, infoLogLength, nullptr, &message[0]);
+        std::cout << "Error: could not link shader: " << message;
+    }
+    
+    // delete the sources so they will delete when the program is deleted
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragShader);
+
+    // make location buffer
+    glGenBuffers(1, &vertexLocBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexLocBuffer);
+    float locs[] = {
+        -1.f, -1.f, 0.f,
+         0.f,  1.f, 0.f,
+         1.f, -1.f, 0.f
+    };
+    glBufferData(GL_ARRAY_BUFFER, sizeof(locs), locs, GL_STATIC_DRAW);
+    
+    
+    while(!glfwWindowShouldClose(window))
+    {
+        glClear(GL_COLOR_BUFFER_BIT);
+        
+        glUseProgram(program);
+        
+        glBindVertexArray(vertexArray);
+        
+        glEnableVertexAttribArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, vertexLocBuffer);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+        
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDisableVertexAttribArray(0);
+        
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+        
 }
