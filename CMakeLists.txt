@@ -8,7 +8,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/cmake;")
 find_package(OpenGL REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(GLEW REQUIRED)
-find_package(Boost REQUIRED system)
+find_package(Boost REQUIRED system thread)
 
 pkg_search_module(GLFW REQUIRED glfw3)
 
