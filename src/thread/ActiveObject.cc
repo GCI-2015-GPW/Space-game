@@ -7,41 +7,36 @@
 using namespace Engine;
 using namespace Thread;
 
-ActiveObject::ActiveObject():
-	mIsDone(false)
-{
+ActiveObject::ActiveObject() : mIsDone(false) {}
+
+ActiveObject::~ActiveObject() {
+  send([this] { mIsDone = true; });
+
+  mThread.join();
 }
 
-ActiveObject::~ActiveObject()
-{
-	send([this] { mIsDone = true; });
+std::unique_ptr<ActiveObject> ActiveObject::create() {
+  std::unique_ptr<ActiveObject> result(new ActiveObject);  // This constructor
+                                                           // is private, so
+                                                           // make_unique would
+                                                           // require some hasle
+                                                           // to get to work.
 
-	mThread.join();
+  result->mThread = std::thread(&ActiveObject::run, result.get());
+
+  return result;
 }
 
-std::unique_ptr<ActiveObject> ActiveObject::create()
-{
-	std::unique_ptr<ActiveObject> result(new ActiveObject); // This constructor is private, so make_unique would require some hasle to get to work.
-
-	result->mThread = std::thread(&ActiveObject::run, result.get());
-
-	return result;
+void ActiveObject::send(Callback message) {
+  mMessageQueue.push_back(std::move(message));
 }
 
-void ActiveObject::send(Callback message)
-{
-	mMessageQueue.push_back(std::move(message));
-}
+void ActiveObject::run() {
+  while (!mIsDone) {
+    Callback fn;
 
-void ActiveObject::run()
-{
-	while (!mIsDone)
-	{
-		Callback fn;
+    mMessageQueue.wait_pull_front(fn);
 
-		mMessageQueue.wait_pull_front(fn);
-
-		if(fn)
-			fn();
-	}
+    if (fn) fn();
+  }
 }

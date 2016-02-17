@@ -5,68 +5,57 @@
 #include "log/Logger.h"
 #include "log/LogSink.h"
 
-namespace Engine
-{
-namespace Core
-{
+namespace Engine {
+namespace Core {
 
-Logger::Logger(const std::string& filename)
-{
-	mActive = Thread::ActiveObject::create();
+Logger::Logger(const std::string& filename) {
+  mActive = Thread::ActiveObject::create();
 
-	add(makeConsoleSink());
-	add(makeFileSink(filename));
+  add(makeConsoleSink());
+  add(makeFileSink(filename));
 }
 
-LogMessage Logger::operator()(
-	eLogLevel level,
-	const std::string& filename,
-	int line
-)
-{
-	return LogMessage(level, filename, line, this);
+LogMessage Logger::operator()(eLogLevel level, const std::string& filename,
+                              int line) {
+  return LogMessage(level, filename, line, this);
 }
 
-void Logger::add(const LogSink& sink)
-{
-	mSinks.push_back(sink); // TODO: Check for duplicates.
+void Logger::add(const LogSink& sink) {
+  mSinks.push_back(sink);  // TODO: Check for duplicates.
 }
 
-void Logger::remove(const LogSink& sink)
-{
-	auto it = std::find(mSinks.begin(), mSinks.end(), sink);
+void Logger::remove(const LogSink& sink) {
+  auto it = std::find(mSinks.begin(), mSinks.end(), sink);
 
-	if (it == mSinks.end())
-		throw std::runtime_error("Tried to remove a sink that was not added yet!\n");
+  if (it == mSinks.end())
+    throw std::runtime_error(
+        "Tried to remove a sink that was not added yet!\n");
 
-	mSinks.erase(it);
+  mSinks.erase(it);
 }
 
-void Logger::flush(const LogMessage& message) const
-{
-	/*
-	// Single-threaded version
+void Logger::flush(const LogMessage& message) const {
+  /*
+  // Single-threaded version
 
-	auto msg = message.mBuffer.str();
+  auto msg = message.mBuffer.str();
 
-	for (auto&& sink: mSinks)
-		sink.forward(message.mMeta, msg);
-	*/
+  for (auto&& sink: mSinks)
+          sink.forward(message.mMeta, msg);
+  */
 
-	// Multi-threaded version
+  // Multi-threaded version
 
-	auto&& sinks = mSinks;
-	auto&& meta = message.mMeta;
-	auto msg = message.mBuffer.str();
+  auto&& sinks = mSinks;
+  auto&& meta = message.mMeta;
+  auto msg = message.mBuffer.str();
 
-	mActive->send([=] {
-		for (auto&& sink : sinks)
-			sink.forward(meta, msg);
-	});
+  mActive->send([=] {
+    for (auto&& sink : sinks) sink.forward(meta, msg);
+  });
 }
 
 Logger* gLogger_ptr = nullptr;
 
-
-} // namespace Core
-} // namespace Engine
+}  // namespace Core
+}  // namespace Engine

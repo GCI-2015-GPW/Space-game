@@ -12,80 +12,64 @@
 #include <memory>
 
 namespace Engine {
-	namespace Core {
-		class LogSink {
-		public:
-			template <typename T>
-			LogSink(T impl);
-			LogSink(const LogSink& sink);
-			LogSink& operator= (LogSink sink);
+namespace Core {
+class LogSink {
+ public:
+  template <typename T>
+  LogSink(T impl);
+  LogSink(const LogSink& sink);
+  LogSink& operator=(LogSink sink);
 
-			bool operator == (const LogSink& sink) const;
+  bool operator==(const LogSink& sink) const;
 
-			void forward (
-				const LogMessage::Meta& meta,
-				const std::string& message
-			) const;
+  void forward(const LogMessage::Meta& meta, const std::string& message) const;
 
-		private:
-			struct Concept {
-				virtual ~Concept() = default;
-				virtual Concept* clone() const = 0;
+ private:
+  struct Concept {
+    virtual ~Concept() = default;
+    virtual Concept* clone() const = 0;
 
-				virtual void forward(
-					const LogMessage::Meta& meta,
-					const std::string& message
-				) const = 0;
-			};
+    virtual void forward(const LogMessage::Meta& meta,
+                         const std::string& message) const = 0;
+  };
 
-			template <typename T>
-			struct Model : Concept {
-				Model(T impl);
+  template <typename T>
+  struct Model : Concept {
+    Model(T impl);
 
-				virtual Concept* clone() const override;
+    virtual Concept* clone() const override;
 
-				virtual void forward(
-					const LogMessage::Meta& meta,
-					const std::string& message
-				) const override;
+    virtual void forward(const LogMessage::Meta& meta,
+                         const std::string& message) const override;
 
-				T mImpl;
-			};
+    T mImpl;
+  };
 
-			std::unique_ptr<Concept> mWrapper;
-		};
+  std::unique_ptr<Concept> mWrapper;
+};
 
-		LogSink makeConsoleSink();
-		LogSink makeFileSink(const std::string& filename);
+LogSink makeConsoleSink();
+LogSink makeFileSink(const std::string& filename);
 
-		template <typename T>
-		LogSink::LogSink(T impl):
-			mWrapper(new Model<T>(std::move(impl)))
-		{
-		}
+template <typename T>
+LogSink::LogSink(T impl)
+    : mWrapper(new Model<T>(std::move(impl))) {}
 
-		template <typename T>
-		LogSink::Model<T>::Model(T impl):
-			mImpl(std::move(impl))
-		{
-		}
+template <typename T>
+LogSink::Model<T>::Model(T impl)
+    : mImpl(std::move(impl)) {}
 
-		template <typename T>
-		LogSink::Concept* LogSink::Model<T>::clone() const
-		{
-			return new Model<T>(mImpl);
-		}
-
-		template <typename T>
-		void LogSink::Model<T>::forward(
-			const LogMessage::Meta& meta,
-			const std::string& message
-		) const
-		{
-			mImpl(meta, message);
-		}
-	}
+template <typename T>
+LogSink::Concept* LogSink::Model<T>::clone() const {
+  return new Model<T>(mImpl);
 }
 
+template <typename T>
+void LogSink::Model<T>::forward(const LogMessage::Meta& meta,
+                                const std::string& message) const {
+  mImpl(meta, message);
+}
+}
+}
 
-#endif // ENGINE_LOG_LOGSINK_H_
+#endif  // ENGINE_LOG_LOGSINK_H_
