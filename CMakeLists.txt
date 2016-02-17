@@ -39,7 +39,7 @@ target_link_libraries(game
     ${GLFW_LIBRARIES} 
     ${GLEW_LIBRARIES} 
     debug ${Boost_SYSTEM_LIBRARY_DEBUG} ${Boost_THREAD_LIBRARY_DEBUG}
-    optimized ${Boost_SYSTEM_LIBRARY_RELEASE} ${Boost_THREAD_LIBRARY_DEBUG}
+    optimized ${Boost_SYSTEM_LIBRARY_RELEASE} ${Boost_THREAD_LIBRARY_RELEASE}
 )
 
 if(UNIX)
