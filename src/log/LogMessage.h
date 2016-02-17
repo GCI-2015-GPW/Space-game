@@ -46,7 +46,7 @@ public:
 private:
     Meta mMeta;
     Logger *mOwner;  // The spawning object is guaranteed to outlive this one, so
-                     // it's fine to use a raw pointe here.
+		     // it's fine to use a raw pointe here.
     std::ostringstream mBuffer;
 };
 

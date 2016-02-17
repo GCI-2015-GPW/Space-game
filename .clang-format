@@ -13,4 +13,4 @@ AccessModifierOffset: -4
 
 BreakBeforeBraces: GNU
 
-UseTab: ForIndentation
+UseTab: Always

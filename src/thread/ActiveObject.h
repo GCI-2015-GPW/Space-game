@@ -20,10 +20,10 @@ namespace Engine
 namespace Thread
 {
 /**
-        Based on Sutters, this is an Active Object.
-        Allows threadsafe execution of void() functions in an object (by
+	Based on Sutters, this is an Active Object.
+	Allows threadsafe execution of void() functions in an object (by
    internally queuing calls)
-        The object maintians its own (Os-level!) thread, so don't overuse this.
+	The object maintians its own (Os-level!) thread, so don't overuse this.
 */
 typedef std::function<void()> Callback;
 
@@ -39,14 +39,14 @@ public:
     ~ActiveObject();
 
     static std::unique_ptr<ActiveObject> create();  // Factory Method.
-                                                    /**
-                                                            In practice, call this with [=] lambda's -- by copying the data
-                                                            we ensure that the data to be worked on is still live by the time
-                                                            the active object gets to actually process it.
-                                                
-                                                            [NOTE] if the callback calls non-const methods the lambda will have to
-                                                       be mutable... -_-
-                                                    */
+						    /**
+							    In practice, call this with [=] lambda's -- by copying the data
+							    we ensure that the data to be worked on is still live by the time
+							    the active object gets to actually process it.
+						
+							    [NOTE] if the callback calls non-const methods the lambda will have to
+						       be mutable... -_-
+						    */
     void send(Callback message);
 
 private:

@@ -11,7 +11,7 @@ ActiveObject::ActiveObject() : mIsDone(false) {}
 ActiveObject::~ActiveObject()
 {
     send([this]
-         {
+	 {
 	     mIsDone = true;
 	 });
 
@@ -21,10 +21,10 @@ ActiveObject::~ActiveObject()
 std::unique_ptr<ActiveObject> ActiveObject::create()
 {
     std::unique_ptr<ActiveObject> result(new ActiveObject);  // This constructor
-                                                             // is private, so
-                                                             // make_unique would
-                                                             // require some hasle
-                                                             // to get to work.
+							     // is private, so
+							     // make_unique would
+							     // require some hasle
+							     // to get to work.
 
     result->mThread = std::thread(&ActiveObject::run, result.get());
 

@@ -44,7 +44,7 @@ private:
 	virtual Concept *clone() const override;
 
 	virtual void forward(const LogMessage::Meta &meta,
-	                     const std::string &message) const override;
+			     const std::string &message) const override;
 
 	T mImpl;
     };

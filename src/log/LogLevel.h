@@ -19,7 +19,7 @@ enum class eLogLevel
     MESSAGE,
     WARNING,
     ERROR_,  // The underscore is required due to the presence of a pre-existing
-             // macro called 'ERROR'.
+	     // macro called 'ERROR'.
     FATAL
 };
 

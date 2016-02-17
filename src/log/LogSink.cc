@@ -67,7 +67,7 @@ struct FileSink
 	auto local_time = std::localtime(&time_t);
 
 	(*mFile) << std::put_time(local_time, "[%H:%M:%S] ") << meta.mLevel << message << " ("
-	         << meta.mFile << ":" << meta.mLine << ")\n";
+		 << meta.mFile << ":" << meta.mLine << ")\n";
     }
 
     std::shared_ptr<std::ofstream> mFile;

@@ -45,7 +45,7 @@ void Logger::flush(const LogMessage &message) const
     auto msg = message.mBuffer.str();
 
     for (auto&& sink: mSinks)
-            sink.forward(message.mMeta, msg);
+	    sink.forward(message.mMeta, msg);
     */
 
     // Multi-threaded version
@@ -55,9 +55,9 @@ void Logger::flush(const LogMessage &message) const
     auto msg = message.mBuffer.str();
 
     mActive->send([=]
-                  {
-	              for (auto &&sink : sinks) sink.forward(meta, msg);
-	          });
+		  {
+		      for (auto &&sink : sinks) sink.forward(meta, msg);
+		  });
 }
 
 Logger *gLogger_ptr = nullptr;
