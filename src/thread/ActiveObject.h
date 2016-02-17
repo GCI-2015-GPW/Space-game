@@ -11,8 +11,9 @@
 #include <functional>
 #include <thread>
 
-#include <boost/thread.hpp>
-#include <boost/thread/sync_queue.hpp>
+#include <thread>
+
+#include <boost/thread/concurrent_queues/sync_deque.hpp>
 
 namespace Engine
 {
@@ -49,12 +50,9 @@ namespace Engine
 			void run(); // Thread Method
 
 			bool mIsDone;
-			boost::csbl::vector<Callback> mMessageQueue;
+			boost::sync_deque<Callback> mMessageQueue;
 
-			// TODO: Use Boost threads instead.
-			// Visual Studio has an issue with joining threads in the destructor of global objects,
-			// sometimes causing deadlocks.
-			boost::thread mThread;
+			std::thread mThread;
 		};
 	}
 }

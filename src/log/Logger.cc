@@ -5,8 +5,10 @@
 #include "log/Logger.h"
 #include "log/LogSink.h"
 
-using namespace Engine;
-using namespace Core;
+namespace Engine
+{
+namespace Core
+{
 
 Logger::Logger(const std::string& filename)
 {
@@ -63,4 +65,8 @@ void Logger::flush(const LogMessage& message) const
 	});
 }
 
-Logger gLogger("Engine.log");
+Logger* gLogger_ptr = nullptr;
+
+
+} // namespace Core
+} // namespace Engine

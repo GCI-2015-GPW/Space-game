@@ -13,6 +13,7 @@ GLuint program;
 
 int main()
 {
+    Engine::Core::Logger::initLogger(); 
     // init glfw
     if(int err = glfwInit() == 0)
     {
@@ -165,12 +166,11 @@ int main()
     };
     glBufferData(GL_ARRAY_BUFFER, sizeof(locs), locs, GL_STATIC_DRAW);
     
-    
+	gLog << "Finished Initializing!";
+	
     while(!glfwWindowShouldClose(window))
     {
-	// Finished!
-	gLog << "Finished Initializing!";
-
+	
         glClear(GL_COLOR_BUFFER_BIT);
         
         glUseProgram(program);

@@ -8,7 +8,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/cmake;")
 find_package(OpenGL REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(GLEW REQUIRED)
-find_package(Boost REQUIRED)
+find_package(Boost REQUIRED system)
 
 pkg_search_module(GLFW REQUIRED glfw3)
 
@@ -24,7 +24,7 @@ set(Space_SOURCES
 	src/log/LogLevel.cc
 	src/log/LogSink.cc
 	src/log/Logger.cc
-	src/thread/ActiveObjects.cc
+	src/thread/ActiveObject.cc
 	src/main.cpp
 )
 
@@ -34,4 +34,16 @@ target_compile_features(game PUBLIC
     cxx_defaulted_functions
 )
 
-target_link_libraries(game ${OPENGL_LIBRARIES} ${GLFW_LIBRARIES} ${GLEW_LIBRARIES} ${BOOST_LIBRARIES})
+target_link_libraries(game 
+    ${OPENGL_LIBRARIES} 
+    ${GLFW_LIBRARIES} 
+    ${GLEW_LIBRARIES} 
+    debug ${Boost_SYSTEM_LIBRARY_DEBUG} ${Boost_THREAD_LIBRARY_DEBUG}
+    optimized ${Boost_SYSTEM_LIBRARY_RELEASE}
+)
+
+if(UNIX)
+    target_link_libraries(game
+		pthread
+	)
+endif(UNIX)

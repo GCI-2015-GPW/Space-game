@@ -7,38 +7,48 @@
 #define ENGINE_LOG_LOGGER_H_
 
 #include "log/LogMessage.h"
-#include "thread/ActiveObjects.h"
+#include "thread/ActiveObject.h"
 
 namespace Engine {
-	namespace Core {
-		class LogSink;
-		class LogMessage;
+namespace Core {
 
-		class Logger {
-		public:
-			Logger(const std::string& filename);
+class LogSink;
+class LogMessage;
 
-			LogMessage operator()(
-				eLogLevel level,
-				const std::string& filename,
-				int line
-			);
+class Logger;
 
-			void add(const LogSink& sink);
-			void remove(const LogSink& sink);
 
-			void flush(const LogMessage& message) const;
+extern Logger* gLogger_ptr;
 
-		private:
-			std::vector<LogSink> mSinks;
-			std::unique_ptr<Thread::ActiveObject> mActive;
-		};
-
-		extern Logger gLogger;
+class Logger {
+public:
+	static void initLogger()
+	{
+		gLogger_ptr = new Logger("Engine.log");
 	}
+
+	Logger(const std::string& filename);
+
+	LogMessage operator()(
+			eLogLevel level,
+			const std::string& filename,
+			int line
+	);
+
+	void add(const LogSink& sink);
+	void remove(const LogSink& sink);
+
+	void flush(const LogMessage& message) const;
+
+private:
+	std::vector<LogSink> mSinks;
+	std::unique_ptr<Thread::ActiveObject> mActive;
+};
+
+}
 }
 
-#define gLogLevel(level)::Engine::Core::gLogger( \
+#define gLogLevel(level)(*::Engine::Core::gLogger_ptr)( \
 	::Engine::Core::eLogLevel::level,	 \
 	__FILE__,				 \
 	__LINE__				 \

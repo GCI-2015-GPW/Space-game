@@ -13,8 +13,10 @@
 #include <iomanip>
 #include <ctime>
 
-using namespace Engine;
-using namespace Core;
+namespace Engine
+{
+namespace Core
+{
 
 LogSink::LogSink(const LogSink& sink):
 	mWrapper(sink.mWrapper->clone())
@@ -95,3 +97,7 @@ LogSink makeFileSink(const std::string& filename)
 {
 	return FileSink(filename);
 }
+
+
+} // namespace Core
+} // namespace Engine

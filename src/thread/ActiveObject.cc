@@ -2,7 +2,7 @@
 // Use of this source code is governed by the MIT license that can be
 // found in the LICENSE file.
 
-#include "thread/ActiveObjects.h"
+#include "thread/ActiveObject.h"
 
 using namespace Engine;
 using namespace Thread;
@@ -23,7 +23,7 @@ std::unique_ptr<ActiveObject> ActiveObject::create()
 {
 	std::unique_ptr<ActiveObject> result(new ActiveObject); // This constructor is private, so make_unique would require some hasle to get to work.
 
-	result->mThread = boost::thread(&ActiveObject::run, result.get());
+	result->mThread = std::thread(&ActiveObject::run, result.get());
 
 	return result;
 }
@@ -39,8 +39,9 @@ void ActiveObject::run()
 	{
 		Callback fn;
 
-		//mMessageQueue.wait_pull_front(fn);
+		mMessageQueue.wait_pull_front(fn);
 
-		fn();
+		if(fn)
+			fn();
 	}
 }
