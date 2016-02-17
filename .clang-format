@@ -8,3 +8,5 @@ Language: Cpp
 PointerAlignment: Left
 
 ColumnLimit: 100
+
+AccessModifierOffset: 0

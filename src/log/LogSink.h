@@ -14,7 +14,7 @@
 namespace Engine {
 namespace Core {
 class LogSink {
-   public:
+    public:
     template <typename T>
     LogSink(T impl);
     LogSink(const LogSink &sink);
@@ -24,7 +24,7 @@ class LogSink {
 
     void forward(const LogMessage::Meta &meta, const std::string &message) const;
 
-   private:
+    private:
     struct Concept {
         virtual ~Concept() = default;
         virtual Concept *clone() const = 0;

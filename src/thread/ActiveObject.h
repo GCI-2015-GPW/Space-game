@@ -26,10 +26,10 @@ namespace Thread {
 typedef std::function<void()> Callback;
 
 class ActiveObject {
-   private:
+    private:
     ActiveObject();  // Only allow creation via the factory method.
 
-   public:
+    public:
     ActiveObject(const ActiveObject &) = delete;
     ActiveObject &operator=(const ActiveObject &) = delete;
 
@@ -46,7 +46,7 @@ class ActiveObject {
                                                     */
     void send(Callback message);
 
-   private:
+    private:
     void run();  // Thread Method
 
     bool mIsDone;

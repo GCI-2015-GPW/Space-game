@@ -20,7 +20,7 @@ class Logger;
 extern Logger *gLogger_ptr;
 
 class Logger {
-   public:
+    public:
     static void initLogger() { gLogger_ptr = new Logger("Engine.log"); }
 
     Logger(const std::string &filename);
@@ -32,7 +32,7 @@ class Logger {
 
     void flush(const LogMessage &message) const;
 
-   private:
+    private:
     std::vector<LogSink> mSinks;
     std::unique_ptr<Thread::ActiveObject> mActive;
 };

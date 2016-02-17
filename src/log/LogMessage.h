@@ -18,13 +18,13 @@ class Logger;
 class LogSink;
 
 class LogMessage {
-   private:
+    private:
     friend class Logger;
     friend class LogSink;
 
     LogMessage(eLogLevel level, const std::string &file, int line, Logger *owner);
 
-   public:
+    public:
     ~LogMessage();
 
     LogMessage(LogMessage &&message);
@@ -39,7 +39,7 @@ class LogMessage {
         int mLine;
     };
 
-   private:
+    private:
     Meta mMeta;
     Logger *mOwner;  // The spawning object is guaranteed to outlive this one, so
                      // it's fine to use a raw pointe here.
