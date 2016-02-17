@@ -1,9 +1,10 @@
-
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include <iostream>
 #include <fstream>
+
+#include "log/Logger.h"
 
 GLFWwindow* window;
 GLuint vertexArray;
@@ -89,7 +90,7 @@ int main()
         }
         else
         {
-            std::cout << "Warning: cannot open file: " << path << std::endl;
+            gLogWarning << "Cannot open file: " << path;
         }
         return ret;
         
@@ -102,7 +103,7 @@ int main()
     GLuint fragShader = glCreateShader(GL_FRAGMENT_SHADER);
     if(!vertexShader || !fragShader)
     {
-        throw std::runtime_error("Error: couldn't make a shader!");
+        gLogError << "Couldn't make a shader!";
     }
     
     
@@ -124,7 +125,7 @@ int main()
     {
         auto message = std::string(infoLogLength + 1, ' ');
         glGetShaderInfoLog(vertexShader, infoLogLength, nullptr, &message[0]);
-        std::cout << "Error: could not compile vertex shader: " << message;
+        gLogError << "Could not compile vertex shader: " << message;
     }
     
     glGetShaderiv(fragShader, GL_INFO_LOG_LENGTH, &infoLogLength);
@@ -132,7 +133,7 @@ int main()
     {
         auto message = std::string(infoLogLength + 1, ' ');
         glGetShaderInfoLog(fragShader, infoLogLength, nullptr, &message[0]);
-        std::cout << "Error: could not compile fragment shader: " << message;
+        gLogError << "Could not compile fragment shader: " << message;
     }
     
     // link into a program
@@ -147,7 +148,7 @@ int main()
     {
         auto message = std::string(infoLogLength + 1, ' ');
         glGetProgramInfoLog(program, infoLogLength, nullptr, &message[0]);
-        std::cout << "Error: could not link shader: " << message;
+        gLogError << "Could not link shader: " << message;
     }
     
     // delete the sources so they will delete when the program is deleted
@@ -167,6 +168,9 @@ int main()
     
     while(!glfwWindowShouldClose(window))
     {
+	// Finished!
+	gLog << "Finished Initializing!";
+
         glClear(GL_COLOR_BUFFER_BIT);
         
         glUseProgram(program);
