@@ -35,15 +35,15 @@ target_compile_features(game PUBLIC
 )
 
 target_link_libraries(game 
-    ${OPENGL_LIBRARIES} 
-    ${GLFW_LIBRARIES} 
-    ${GLEW_LIBRARIES} 
-    debug ${Boost_SYSTEM_LIBRARY_DEBUG} ${Boost_THREAD_LIBRARY_DEBUG}
-    optimized ${Boost_SYSTEM_LIBRARY_RELEASE} ${Boost_THREAD_LIBRARY_RELEASE}
+	${OPENGL_LIBRARIES} 
+	${GLFW_LIBRARIES} 
+	${GLEW_LIBRARIES} 
+	debug ${Boost_SYSTEM_LIBRARY_DEBUG} ${Boost_THREAD_LIBRARY_DEBUG}
+	optimized ${Boost_SYSTEM_LIBRARY_RELEASE} ${Boost_THREAD_LIBRARY_RELEASE}
 )
 
 if(UNIX)
-    target_link_libraries(game
+	target_link_libraries(game
 		pthread
 	)
 endif(UNIX)
