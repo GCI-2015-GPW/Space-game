@@ -9,4 +9,8 @@ PointerAlignment: Left
 
 ColumnLimit: 100
 
-AccessModifierOffset: 0
+AccessModifierOffset: -4
+
+BreakBeforeBraces: GNU
+
+UseTab: ForIndentation

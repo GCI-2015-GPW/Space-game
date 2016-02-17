@@ -8,14 +8,18 @@ using namespace Engine;
 using namespace Thread;
 
 ActiveObject::ActiveObject() : mIsDone(false) {}
-
-ActiveObject::~ActiveObject() {
-    send([this] { mIsDone = true; });
+ActiveObject::~ActiveObject()
+{
+    send([this]
+         {
+	     mIsDone = true;
+	 });
 
     mThread.join();
 }
 
-std::unique_ptr<ActiveObject> ActiveObject::create() {
+std::unique_ptr<ActiveObject> ActiveObject::create()
+{
     std::unique_ptr<ActiveObject> result(new ActiveObject);  // This constructor
                                                              // is private, so
                                                              // make_unique would
@@ -28,13 +32,14 @@ std::unique_ptr<ActiveObject> ActiveObject::create() {
 }
 
 void ActiveObject::send(Callback message) { mMessageQueue.push_back(std::move(message)); }
+void ActiveObject::run()
+{
+    while (!mIsDone)
+	{
+	    Callback fn;
 
-void ActiveObject::run() {
-    while (!mIsDone) {
-        Callback fn;
+	    mMessageQueue.wait_pull_front(fn);
 
-        mMessageQueue.wait_pull_front(fn);
-
-        if (fn) fn();
-    }
+	    if (fn) fn();
+	}
 }

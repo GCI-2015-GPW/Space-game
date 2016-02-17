@@ -9,9 +9,12 @@
 
 #include <ostream>
 
-namespace Engine {
-namespace Core {
-enum class eLogLevel {
+namespace Engine
+{
+namespace Core
+{
+enum class eLogLevel
+{
     DEBUG,
     MESSAGE,
     WARNING,

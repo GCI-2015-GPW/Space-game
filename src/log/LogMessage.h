@@ -12,19 +12,22 @@
 #include <ostream>
 #include <vector>
 
-namespace Engine {
-namespace Core {
+namespace Engine
+{
+namespace Core
+{
 class Logger;
 class LogSink;
 
-class LogMessage {
-    private:
+class LogMessage
+{
+private:
     friend class Logger;
     friend class LogSink;
 
     LogMessage(eLogLevel level, const std::string &file, int line, Logger *owner);
 
-    public:
+public:
     ~LogMessage();
 
     LogMessage(LogMessage &&message);
@@ -33,13 +36,14 @@ class LogMessage {
     LogMessage &operator<<(const T &message);
     LogMessage &operator<<(std::ostream &(*fn)(std::ostream &os));
 
-    struct Meta {
-        eLogLevel mLevel;
-        std::string mFile;
-        int mLine;
+    struct Meta
+    {
+	eLogLevel mLevel;
+	std::string mFile;
+	int mLine;
     };
 
-    private:
+private:
     Meta mMeta;
     Logger *mOwner;  // The spawning object is guaranteed to outlive this one, so
                      // it's fine to use a raw pointe here.
@@ -47,11 +51,13 @@ class LogMessage {
 };
 
 template <typename T>
-LogMessage &LogMessage::operator<<(const T &message) {
+LogMessage &LogMessage::operator<<(const T &message)
+{
     mBuffer << message;
     return *this;
 }
-}
-}
+
+}  // namespace Core
+}  // namespace Engine
 
 #endif  // ENGINE_LOG_LOGMESSAGE_H_

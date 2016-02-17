@@ -9,9 +9,10 @@
 #include "log/LogMessage.h"
 #include "thread/ActiveObject.h"
 
-namespace Engine {
-namespace Core {
-
+namespace Engine
+{
+namespace Core
+{
 class LogSink;
 class LogMessage;
 
@@ -19,10 +20,10 @@ class Logger;
 
 extern Logger *gLogger_ptr;
 
-class Logger {
-    public:
+class Logger
+{
+public:
     static void initLogger() { gLogger_ptr = new Logger("Engine.log"); }
-
     Logger(const std::string &filename);
 
     LogMessage operator()(eLogLevel level, const std::string &filename, int line);
@@ -32,7 +33,7 @@ class Logger {
 
     void flush(const LogMessage &message) const;
 
-    private:
+private:
     std::vector<LogSink> mSinks;
     std::unique_ptr<Thread::ActiveObject> mActive;
 };

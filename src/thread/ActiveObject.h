@@ -15,8 +15,10 @@
 
 #include <boost/thread/concurrent_queues/sync_deque.hpp>
 
-namespace Engine {
-namespace Thread {
+namespace Engine
+{
+namespace Thread
+{
 /**
         Based on Sutters, this is an Active Object.
         Allows threadsafe execution of void() functions in an object (by
@@ -25,11 +27,12 @@ namespace Thread {
 */
 typedef std::function<void()> Callback;
 
-class ActiveObject {
-    private:
+class ActiveObject
+{
+private:
     ActiveObject();  // Only allow creation via the factory method.
 
-    public:
+public:
     ActiveObject(const ActiveObject &) = delete;
     ActiveObject &operator=(const ActiveObject &) = delete;
 
@@ -46,7 +49,7 @@ class ActiveObject {
                                                     */
     void send(Callback message);
 
-    private:
+private:
     void run();  // Thread Method
 
     bool mIsDone;

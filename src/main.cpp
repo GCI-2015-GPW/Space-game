@@ -11,13 +11,15 @@ GLuint vertexArray;
 GLuint vertexLocBuffer;
 GLuint program;
 
-int main() {
+int main()
+{
     Engine::Core::Logger::initLogger();
     // init glfw
-    if (int err = glfwInit() == 0) {
-        std::cerr << "Failed to initalize glfw with error code: " << err << std::endl;
-        std::terminate();
-    }
+    if (int err = glfwInit() == 0)
+	{
+	    std::cerr << "Failed to initalize glfw with error code: " << err << std::endl;
+	    std::terminate();
+	}
 
     // set glfw hints
     /////////////////
@@ -37,10 +39,11 @@ int main() {
 
     // create the window
     window = glfwCreateWindow(1280, 720, "Space! I'm in space!", nullptr, nullptr);
-    if (!window) {
-        std::cerr << "Window creation failed!" << std::endl;
-        std::terminate();
-    }
+    if (!window)
+	{
+	    std::cerr << "Window creation failed!" << std::endl;
+	    std::terminate();
+	}
 
     // make this thread control the window
     glfwMakeContextCurrent(window);
@@ -49,10 +52,11 @@ int main() {
     glewExperimental = true;
 
     // init GLEW (loads the opengl functions)
-    if (int err = glewInit() != GLEW_OK) {
-        std::cerr << "Error initalizing glew: " << glewGetErrorString(err) << std::endl;
-        std::terminate();
-    }
+    if (int err = glewInit() != GLEW_OK)
+	{
+	    std::cerr << "Error initalizing glew: " << glewGetErrorString(err) << std::endl;
+	    std::terminate();
+	}
 
     // init opengl resources
     ////////////////////////
@@ -66,21 +70,26 @@ int main() {
     // make shaders
 
     // load shader source
-    auto loadFile = [](const std::string &path) {
-        std::ifstream file{path};
+    auto loadFile = [](const std::string &path)
+    {
+	std::ifstream file{path};
 
-        std::string ret;
-        std::string line;
+	std::string ret;
+	std::string line;
 
-        if (file.is_open()) {
-            while (std::getline(file, line)) {
-                ret.append(line);
-                ret.push_back('\n');
-            }
-        } else {
-            gLogWarning << "Cannot open file: " << path;
-        }
-        return ret;
+	if (file.is_open())
+	    {
+		while (std::getline(file, line))
+		    {
+			ret.append(line);
+			ret.push_back('\n');
+		    }
+	    }
+	else
+	    {
+		gLogWarning << "Cannot open file: " << path;
+	    }
+	return ret;
 
     };
     std::string vertexSource = loadFile("shaders/testvert.glsl");
@@ -89,9 +98,10 @@ int main() {
     // generate names
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     GLuint fragShader = glCreateShader(GL_FRAGMENT_SHADER);
-    if (!vertexShader || !fragShader) {
-        gLogError << "Couldn't make a shader!";
-    }
+    if (!vertexShader || !fragShader)
+	{
+	    gLogError << "Couldn't make a shader!";
+	}
 
     // insert the source
     const char *vertSourceCStr = vertexSource.c_str();
@@ -107,18 +117,20 @@ int main() {
     // make sure it compiled correctly
     GLint infoLogLength = 0;
     glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &infoLogLength);
-    if (infoLogLength > 1) {
-        auto message = std::string(infoLogLength + 1, ' ');
-        glGetShaderInfoLog(vertexShader, infoLogLength, nullptr, &message[0]);
-        gLogError << "Could not compile vertex shader: " << message;
-    }
+    if (infoLogLength > 1)
+	{
+	    auto message = std::string(infoLogLength + 1, ' ');
+	    glGetShaderInfoLog(vertexShader, infoLogLength, nullptr, &message[0]);
+	    gLogError << "Could not compile vertex shader: " << message;
+	}
 
     glGetShaderiv(fragShader, GL_INFO_LOG_LENGTH, &infoLogLength);
-    if (infoLogLength > 1) {
-        auto message = std::string(infoLogLength + 1, ' ');
-        glGetShaderInfoLog(fragShader, infoLogLength, nullptr, &message[0]);
-        gLogError << "Could not compile fragment shader: " << message;
-    }
+    if (infoLogLength > 1)
+	{
+	    auto message = std::string(infoLogLength + 1, ' ');
+	    glGetShaderInfoLog(fragShader, infoLogLength, nullptr, &message[0]);
+	    gLogError << "Could not compile fragment shader: " << message;
+	}
 
     // link into a program
     program = glCreateProgram();
@@ -128,11 +140,12 @@ int main() {
 
     // make sure it linked correctly
     glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLogLength);
-    if (infoLogLength > 1) {
-        auto message = std::string(infoLogLength + 1, ' ');
-        glGetProgramInfoLog(program, infoLogLength, nullptr, &message[0]);
-        gLogError << "Could not link shader: " << message;
-    }
+    if (infoLogLength > 1)
+	{
+	    auto message = std::string(infoLogLength + 1, ' ');
+	    glGetProgramInfoLog(program, infoLogLength, nullptr, &message[0]);
+	    gLogError << "Could not link shader: " << message;
+	}
 
     // delete the sources so they will delete when the program is deleted
     glDeleteShader(vertexShader);
@@ -146,21 +159,22 @@ int main() {
 
     gLog << "Finished Initializing!";
 
-    while (!glfwWindowShouldClose(window)) {
-        glClear(GL_COLOR_BUFFER_BIT);
+    while (!glfwWindowShouldClose(window))
+	{
+	    glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(program);
+	    glUseProgram(program);
 
-        glBindVertexArray(vertexArray);
+	    glBindVertexArray(vertexArray);
 
-        glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, vertexLocBuffer);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+	    glEnableVertexAttribArray(0);
+	    glBindBuffer(GL_ARRAY_BUFFER, vertexLocBuffer);
+	    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
 
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        glDisableVertexAttribArray(0);
+	    glDrawArrays(GL_TRIANGLES, 0, 3);
+	    glDisableVertexAttribArray(0);
 
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
+	    glfwSwapBuffers(window);
+	    glfwPollEvents();
+	}
 }
