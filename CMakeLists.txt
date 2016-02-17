@@ -16,7 +16,7 @@ pkg_search_module(GLFW REQUIRED glfw3)
 include_directories(${GLFW_INCLUDE_DIRS})
 include_directories(${GLEW_INCLUDE_DIRS})
 include_directories(${OPENGL_INCLUDE_DIR})
-include_directories(${NOOST_INCLUDE_DIR})
+include_directories(${BOOST_INCLUDE_DIR})
 include_directories(src)
 
 set(Space_SOURCES
