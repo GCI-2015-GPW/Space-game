@@ -18,38 +18,38 @@ class Logger;
 class LogSink;
 
 class LogMessage {
- private:
-  friend class Logger;
-  friend class LogSink;
+   private:
+    friend class Logger;
+    friend class LogSink;
 
-  LogMessage(eLogLevel level, const std::string& file, int line, Logger* owner);
+    LogMessage(eLogLevel level, const std::string &file, int line, Logger *owner);
 
- public:
-  ~LogMessage();
+   public:
+    ~LogMessage();
 
-  LogMessage(LogMessage&& message);
+    LogMessage(LogMessage &&message);
 
-  template <typename T>
-  LogMessage& operator<<(const T& message);
-  LogMessage& operator<<(std::ostream& (*fn)(std::ostream& os));
+    template <typename T>
+    LogMessage &operator<<(const T &message);
+    LogMessage &operator<<(std::ostream &(*fn)(std::ostream &os));
 
-  struct Meta {
-    eLogLevel mLevel;
-    std::string mFile;
-    int mLine;
-  };
+    struct Meta {
+        eLogLevel mLevel;
+        std::string mFile;
+        int mLine;
+    };
 
- private:
-  Meta mMeta;
-  Logger* mOwner;  // The spawning object is guaranteed to outlive this one, so
-                   // it's fine to use a raw pointe here.
-  std::ostringstream mBuffer;
+   private:
+    Meta mMeta;
+    Logger *mOwner;  // The spawning object is guaranteed to outlive this one, so
+                     // it's fine to use a raw pointe here.
+    std::ostringstream mBuffer;
 };
 
 template <typename T>
-LogMessage& LogMessage::operator<<(const T& message) {
-  mBuffer << message;
-  return *this;
+LogMessage &LogMessage::operator<<(const T &message) {
+    mBuffer << message;
+    return *this;
 }
 }
 }

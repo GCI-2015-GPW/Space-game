@@ -18,63 +18,62 @@ std::atomic<bool> gLogLevelState[5]{
 };
 
 int selectLogState(eLogLevel level) {
-  // FIXME: Inline this?
+    // FIXME: Inline this?
 
-  switch (level) {
-    case eLogLevel::DEBUG:
-      return 0;
-    case eLogLevel::MESSAGE:
-      return 1;
-    case eLogLevel::WARNING:
-      return 2;
-    case eLogLevel::ERROR_:
-      return 3;
-    case eLogLevel::FATAL:
-      return 4;
+    switch (level) {
+        case eLogLevel::DEBUG:
+            return 0;
+        case eLogLevel::MESSAGE:
+            return 1;
+        case eLogLevel::WARNING:
+            return 2;
+        case eLogLevel::ERROR_:
+            return 3;
+        case eLogLevel::FATAL:
+            return 4;
 
-    default:
-      throw std::runtime_error("Unsupported loglevel!\n");
-  }
+        default:
+            throw std::runtime_error("Unsupported loglevel!\n");
+    }
 }
 }
 
 void setLogLevel(eLogLevel level, bool enabled) {
-  int lvl = selectLogState(level);
-  gLogLevelState[lvl].store(enabled, std::memory_order_release);
+    int lvl = selectLogState(level);
+    gLogLevelState[lvl].store(enabled, std::memory_order_release);
 }
 
 bool logLevel(eLogLevel level) {
-  int lvl = selectLogState(level);
-  return gLogLevelState[lvl].load(std::memory_order_acquire);
+    int lvl = selectLogState(level);
+    return gLogLevelState[lvl].load(std::memory_order_acquire);
 }
 }
 }
 
-std::ostream& operator<<(std::ostream& os,
-                         const Engine::Core::eLogLevel& level) {
-  using Engine::Core::eLogLevel;
+std::ostream &operator<<(std::ostream &os, const Engine::Core::eLogLevel &level) {
+    using Engine::Core::eLogLevel;
 
-  // Chosen so you'll have an easy time spotting them in the actual log.
+    // Chosen so you'll have an easy time spotting them in the actual log.
 
-  switch (level) {
-    case eLogLevel::DEBUG:
-      os << " [DEBUG]: ";
-      break;
-    case eLogLevel::MESSAGE:
-      os << "[STDOUT]: ";
-      break;  // This should be the standard output.
-    case eLogLevel::WARNING:
-      os << "*WARNING* ";
-      break;
-    case eLogLevel::ERROR_:
-      os << "< ERROR > ";
-      break;
-    case eLogLevel::FATAL:
-      os << "<## FATAL ##> ";
-      break;
-    default:
-      os << "Unknown";
-  }
+    switch (level) {
+        case eLogLevel::DEBUG:
+            os << " [DEBUG]: ";
+            break;
+        case eLogLevel::MESSAGE:
+            os << "[STDOUT]: ";
+            break;  // This should be the standard output.
+        case eLogLevel::WARNING:
+            os << "*WARNING* ";
+            break;
+        case eLogLevel::ERROR_:
+            os << "< ERROR > ";
+            break;
+        case eLogLevel::FATAL:
+            os << "<## FATAL ##> ";
+            break;
+        default:
+            os << "Unknown";
+    }
 
-  return os;
+    return os;
 }

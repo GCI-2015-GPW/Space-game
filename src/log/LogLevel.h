@@ -12,12 +12,12 @@
 namespace Engine {
 namespace Core {
 enum class eLogLevel {
-  DEBUG,
-  MESSAGE,
-  WARNING,
-  ERROR_,  // The underscore is required due to the presence of a pre-existing
-           // macro called 'ERROR'.
-  FATAL
+    DEBUG,
+    MESSAGE,
+    WARNING,
+    ERROR_,  // The underscore is required due to the presence of a pre-existing
+             // macro called 'ERROR'.
+    FATAL
 };
 
 void setLogLevel(eLogLevel level, bool enabled);
@@ -25,7 +25,6 @@ bool logLevel(eLogLevel level);
 }
 }
 
-std::ostream& operator<<(std::ostream& os,
-                         const Engine::Core::eLogLevel& level);
+std::ostream &operator<<(std::ostream &os, const Engine::Core::eLogLevel &level);
 
 #endif  // ENGINE_LOG_LOGLEVEL_H_

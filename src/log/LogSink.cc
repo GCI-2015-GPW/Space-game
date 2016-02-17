@@ -16,58 +16,55 @@
 namespace Engine {
 namespace Core {
 
-LogSink::LogSink(const LogSink& sink) : mWrapper(sink.mWrapper->clone()) {}
+LogSink::LogSink(const LogSink &sink) : mWrapper(sink.mWrapper->clone()) {}
 
-LogSink& LogSink::operator=(LogSink sink) {
-  // The signature already copy-constructed a new sink,
-  // so we only need to move from the temporary to this object.
-  mWrapper = std::move(sink.mWrapper);
-  return *this;
+LogSink &LogSink::operator=(LogSink sink) {
+    // The signature already copy-constructed a new sink,
+    // so we only need to move from the temporary to this object.
+    mWrapper = std::move(sink.mWrapper);
+    return *this;
 }
 
-bool LogSink::operator==(const LogSink& sink) const {
-  return (mWrapper.get() == sink.mWrapper.get());
+bool LogSink::operator==(const LogSink &sink) const {
+    return (mWrapper.get() == sink.mWrapper.get());
 }
 
-void LogSink::forward(const LogMessage::Meta& meta,
-                      const std::string& message) const {
-  mWrapper->forward(meta, message);
+void LogSink::forward(const LogMessage::Meta &meta, const std::string &message) const {
+    mWrapper->forward(meta, message);
 }
 
 LogSink makeConsoleSink() {
-  return [](const LogMessage::Meta& meta, const std::string& message) {
-    std::cout << meta.mLevel << message << "\n";
-  };
+    return [](const LogMessage::Meta &meta, const std::string &message) {
+        std::cout << meta.mLevel << message << "\n";
+    };
 }
 
 namespace {
 struct FileSink {
-  FileSink(const std::string& filename)
-      : mFile(std::make_shared<std::ofstream>(filename)) {
-    if (!mFile->good()) {
-      std::string message = "Failed to open file sink: ";
-      message.append(filename);
-      throw std::runtime_error(message);
+    FileSink(const std::string &filename) : mFile(std::make_shared<std::ofstream>(filename)) {
+        if (!mFile->good()) {
+            std::string message = "Failed to open file sink: ";
+            message.append(filename);
+            throw std::runtime_error(message);
+        }
     }
-  }
 
-  void operator()(const LogMessage::Meta& meta,
-                  const std::string& message) const {
-    using namespace std::chrono;
+    void operator()(const LogMessage::Meta &meta, const std::string &message) const {
+        using namespace std::chrono;
 
-    auto now = system_clock::now();
-    auto time_t = system_clock::to_time_t(now);
-    auto local_time = std::localtime(&time_t);
+        auto now = system_clock::now();
+        auto time_t = system_clock::to_time_t(now);
+        auto local_time = std::localtime(&time_t);
 
-    (*mFile) << std::put_time(local_time, "[%H:%M:%S] ") << meta.mLevel
-             << message << " (" << meta.mFile << ":" << meta.mLine << ")\n";
-  }
+        (*mFile) << std::put_time(local_time, "[%H:%M:%S] ") << meta.mLevel << message << " ("
+                 << meta.mFile << ":" << meta.mLine << ")\n";
+    }
 
-  std::shared_ptr<std::ofstream> mFile;
+    std::shared_ptr<std::ofstream> mFile;
 };
 }
 
-LogSink makeFileSink(const std::string& filename) { return FileSink(filename); }
+LogSink makeFileSink(const std::string &filename) { return FileSink(filename); }
 
 }  // namespace Core
 }  // namespace Engine

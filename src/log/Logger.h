@@ -17,31 +17,30 @@ class LogMessage;
 
 class Logger;
 
-extern Logger* gLogger_ptr;
+extern Logger *gLogger_ptr;
 
 class Logger {
- public:
-  static void initLogger() { gLogger_ptr = new Logger("Engine.log"); }
+   public:
+    static void initLogger() { gLogger_ptr = new Logger("Engine.log"); }
 
-  Logger(const std::string& filename);
+    Logger(const std::string &filename);
 
-  LogMessage operator()(eLogLevel level, const std::string& filename, int line);
+    LogMessage operator()(eLogLevel level, const std::string &filename, int line);
 
-  void add(const LogSink& sink);
-  void remove(const LogSink& sink);
+    void add(const LogSink &sink);
+    void remove(const LogSink &sink);
 
-  void flush(const LogMessage& message) const;
+    void flush(const LogMessage &message) const;
 
- private:
-  std::vector<LogSink> mSinks;
-  std::unique_ptr<Thread::ActiveObject> mActive;
+   private:
+    std::vector<LogSink> mSinks;
+    std::unique_ptr<Thread::ActiveObject> mActive;
 };
 }
 }
 
-#define gLogLevel(level)                                                     \
-  (*::Engine::Core::gLogger_ptr)(::Engine::Core::eLogLevel::level, __FILE__, \
-                                 __LINE__)
+#define gLogLevel(level) \
+    (*::Engine::Core::gLogger_ptr)(::Engine::Core::eLogLevel::level, __FILE__, __LINE__)
 
 #define gLog gLogLevel(MESSAGE)
 
