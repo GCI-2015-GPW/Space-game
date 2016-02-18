@@ -30,32 +30,32 @@ typedef std::function<void()> Callback;
 class ActiveObject
 {
 private:
-    ActiveObject();  // Only allow creation via the factory method.
+	ActiveObject();  // Only allow creation via the factory method.
 
 public:
-    ActiveObject(const ActiveObject &) = delete;
-    ActiveObject &operator=(const ActiveObject &) = delete;
+	ActiveObject(const ActiveObject &) = delete;
+	ActiveObject &operator=(const ActiveObject &) = delete;
 
-    ~ActiveObject();
+	~ActiveObject();
 
-    static std::unique_ptr<ActiveObject> create();  // Factory Method.
-						    /**
-							    In practice, call this with [=] lambda's -- by copying the data
-							    we ensure that the data to be worked on is still live by the time
-							    the active object gets to actually process it.
-						
-							    [NOTE] if the callback calls non-const methods the lambda will have to
-						       be mutable... -_-
-						    */
-    void send(Callback message);
+	static std::unique_ptr<ActiveObject> create();  // Factory Method.
+													/**
+														In practice, call this with [=] lambda's -- by copying the data
+														we ensure that the data to be worked on is still live by the time
+														the active object gets to actually process it.
+												
+														[NOTE] if the callback calls non-const methods the lambda will have to
+													   be mutable... -_-
+													*/
+	void send(Callback message);
 
 private:
-    void run();  // Thread Method
+	void run();  // Thread Method
 
-    bool mIsDone;
-    boost::sync_deque<Callback> mMessageQueue;
+	bool mIsDone;
+	boost::sync_deque<Callback> mMessageQueue;
 
-    std::thread mThread;
+	std::thread mThread;
 };
 }
 }

@@ -14,3 +14,4 @@ AccessModifierOffset: -4
 BreakBeforeBraces: GNU
 
 UseTab: Always
+TabWidth: 4

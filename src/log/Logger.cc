@@ -3,64 +3,56 @@
 // found in the LICENSE file.
 
 #include "log/Logger.h"
-#include "log/LogSink.h"
+
+#include <fstream>
 
 namespace Engine
 {
 namespace Core
 {
-Logger::Logger(const std::string &filename)
+Logger::Logger(const std::string& filename)
 {
-    mActive = Thread::ActiveObject::create();
+	mActive = Thread::ActiveObject::create();
 
-    add(makeConsoleSink());
-    add(makeFileSink(filename));
+	add([](const std::string& message, eLogLevel level, const std::string file, uint32_t lineNumber)
+		{
+			if (level == eLogLevel::MESSAGE)
+				{
+					std::cout << "MESSAGE [" << file << ":" << lineNumber << "] " << message
+							  << std::endl;
+				}
+
+		});
+	auto file = std::make_shared<std::ofstream>(filename);
+	add([file](const std::string& message, eLogLevel level, const std::string fileName,
+			   uint32_t lineNumber)
+		{
+			*file << level << "[" << fileName << ":" << lineNumber << "] " << message << std::endl;
+		});
 }
 
-LogMessage Logger::operator()(eLogLevel level, const std::string &filename, int line)
+void Logger::add(const std::function<void(const std::string& message, eLogLevel level,
+										  const std::string file, uint32_t lineNumber)> sink)
 {
-    return LogMessage(level, filename, line, this);
+	mSinks.push_back(sink);
 }
 
-void Logger::add(const LogSink &sink)
+void Logger::write(const std::string& message, eLogLevel level, const std::string& file,
+				   uint32_t lineNumber)
 {
-    mSinks.push_back(sink);  // TODO: Check for duplicates.
+	mActive->send([
+		this,
+		message = std::string{std::move(message)},
+		level,
+		file = std::string{std::move(file)},
+		lineNumber
+	]
+				  {
+					  for (auto&& sink : mSinks) sink(message, level, file, lineNumber);
+				  });
 }
 
-void Logger::remove(const LogSink &sink)
-{
-    auto it = std::find(mSinks.begin(), mSinks.end(), sink);
-
-    if (it == mSinks.end())
-	throw std::runtime_error("Tried to remove a sink that was not added yet!\n");
-
-    mSinks.erase(it);
-}
-
-void Logger::flush(const LogMessage &message) const
-{
-    /*
-    // Single-threaded version
-
-    auto msg = message.mBuffer.str();
-
-    for (auto&& sink: mSinks)
-	    sink.forward(message.mMeta, msg);
-    */
-
-    // Multi-threaded version
-
-    auto &&sinks = mSinks;
-    auto &&meta = message.mMeta;
-    auto msg = message.mBuffer.str();
-
-    mActive->send([=]
-		  {
-		      for (auto &&sink : sinks) sink.forward(meta, msg);
-		  });
-}
-
-Logger *gLogger_ptr = nullptr;
+Logger* gLogger_ptr = nullptr;
 
 }  // namespace Core
 }  // namespace Engine

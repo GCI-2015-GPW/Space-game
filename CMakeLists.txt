@@ -2,14 +2,11 @@ cmake_minimum_required(VERSION 3.0)
 
 project(Space-game)
 
-set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/cmake;")
-
-
 find_package(OpenGL REQUIRED)
-find_package(PkgConfig REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(Boost REQUIRED system thread)
 
+find_package(PkgConfig REQUIRED)
 pkg_search_module(GLFW REQUIRED glfw3)
 
 
@@ -20,9 +17,6 @@ include_directories(${BOOST_INCLUDE_DIR})
 include_directories(src)
 
 set(Space_SOURCES
-	src/log/LogMessage.cc
-	src/log/LogLevel.cc
-	src/log/LogSink.cc
 	src/log/Logger.cc
 	src/thread/ActiveObject.cc
 	src/main.cpp
@@ -30,10 +24,13 @@ set(Space_SOURCES
 
 add_executable(game ${Space_SOURCES})
 
+# make sure we get a c++14 compiler
 target_compile_features(game PUBLIC
-    cxx_defaulted_functions
+	cxx_defaulted_functions
+	cxx_lambda_init_captures
 )
 
+# link to the libraries we need
 target_link_libraries(game 
 	${OPENGL_LIBRARIES} 
 	${GLFW_LIBRARIES} 
