@@ -12,13 +12,15 @@ namespace Engine
 {
 namespace Core
 {
+	
+/// Defines the severity levels for logging
 enum class eLogLevel
 {
-	DEBUG,
-	MESSAGE,
-	ERROR_,
-	WARNING,
-	FATAL
+	DEBUG,	/// Debug messages, can be ignored by the user
+	MESSAGE,/// General info, by default the only level printed to stdout
+	ERROR_,	/// Error message: possibly breaking issue
+	WARNING,/// Warning message, for example a config issue
+	FATAL	/// Fatal error, no possible recovery
 };
 
 template <typename Stream>

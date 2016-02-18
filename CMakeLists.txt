@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.0)
 
 project(Space-game)
 
+set(BUILD_DOCS OFF CACHE BOOL "Should cmake build doxygen documentation?")
+
+
+
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(Boost REQUIRED system thread)
@@ -20,6 +24,10 @@ set(Space_SOURCES
 	src/log/Logger.cc
 	src/thread/ActiveObject.cc
 	src/main.cpp
+)
+
+set(Space_HEADERS
+	src/log/Logger.h	
 )
 
 add_executable(game ${Space_SOURCES})
@@ -44,3 +52,28 @@ if(UNIX)
 		pthread
 	)
 endif(UNIX)
+
+
+# documentation building
+
+
+if(${BUILD_DOCS})
+	
+	message("\nBuilding documentation\n")
+	
+	find_package(Doxygen REQUIRED)
+	
+	set(doxyfile_in Doxyfile.in)
+	set(doxyfile ${CMAKE_BINARY_DIR}/Doxyfile)
+	
+	configure_file(${doxyfile_in} ${doxyfile})
+	
+	add_custom_target(doc
+		ALL
+		COMMAND ${DOXYGEN_EXECUTABLE}
+		WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+		COMMENT "Generating doxygen documentation"
+		DEPENDS ${Space_HEADERS} ${Space_SOURCES}
+	)
+
+endif(${BUILD_DOCS})
