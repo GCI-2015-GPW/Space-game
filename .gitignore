@@ -11,3 +11,5 @@ Makefile
 CMakeCache.txt
 cmake_install.cmake
 CMakeFiles/
+
+Engine.log
