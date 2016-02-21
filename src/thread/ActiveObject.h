@@ -2,10 +2,11 @@
 // Use of this source code is governed by the MIT license that can be
 // found in the LICENSE file.
 
-#pragma once
+/// @file ActiveObject.h
+///
+/// Defines the ActiveObject class
 
-#ifndef ENGINE_THREAD_ACTIVEOBJECTS_H_
-#define ENGINE_THREAD_ACTIVEOBJECTS_H_
+#pragma once
 
 #include <memory>
 #include <functional>
@@ -19,14 +20,16 @@ namespace Engine
 {
 namespace Thread
 {
-/**
-	Based on Sutters, this is an Active Object.
-	Allows threadsafe execution of void() functions in an object (by
-   internally queuing calls)
-	The object maintians its own (Os-level!) thread, so don't overuse this.
-*/
+/// @brief A generic callback, with possible state
 typedef std::function<void()> Callback;
 
+
+/// @brief Allows threadsafe execution of void() functions in an object
+///
+/// Allows threadsafe execution of void() functions in an object (by
+/// internally queuing calls)
+/// The object maintians its own (Os-level!) thread, so don't overuse this.
+/// Based on <a href="http://www.drdobbs.com/parallel/prefer-using-active-objects-instead-of-n/225700095">Sutter's implementation</a>
 class ActiveObject
 {
 private:
@@ -38,15 +41,13 @@ public:
 
 	~ActiveObject();
 
+	/// @brief Factory method
 	static std::unique_ptr<ActiveObject> create();  // Factory Method.
-													/**
-														In practice, call this with [=] lambda's -- by copying the data
-														we ensure that the data to be worked on is still live by the time
-														the active object gets to actually process it.
-												
-														[NOTE] if the callback calls non-const methods the lambda will have to
-													   be mutable... -_-
-													*/
+	
+	
+	/// @brief Queues up an item
+	///
+	/// In practice, call this with a lambda, but be very careful about lifetimes.
 	void send(Callback message);
 
 private:
@@ -59,5 +60,3 @@ private:
 };
 }
 }
-
-#endif
