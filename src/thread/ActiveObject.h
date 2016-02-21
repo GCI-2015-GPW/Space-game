@@ -23,13 +23,14 @@ namespace Thread
 /// @brief A generic callback, with possible state
 typedef std::function<void()> Callback;
 
-
 /// @brief Allows threadsafe execution of void() functions in an object
 ///
 /// Allows threadsafe execution of void() functions in an object (by
 /// internally queuing calls)
 /// The object maintians its own (Os-level!) thread, so don't overuse this.
-/// Based on <a href="http://www.drdobbs.com/parallel/prefer-using-active-objects-instead-of-n/225700095">Sutter's implementation</a>
+/// Based on <a
+/// href="http://www.drdobbs.com/parallel/prefer-using-active-objects-instead-of-n/225700095">Sutter's
+/// implementation</a>
 class ActiveObject
 {
 private:
@@ -43,8 +44,7 @@ public:
 
 	/// @brief Factory method
 	static std::unique_ptr<ActiveObject> create();  // Factory Method.
-	
-	
+
 	/// @brief Queues up an item
 	///
 	/// In practice, call this with a lambda, but be very careful about lifetimes.

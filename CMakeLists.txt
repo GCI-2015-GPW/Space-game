@@ -28,6 +28,7 @@ set(Space_SOURCES
 	src/log/Logger.cc
 	src/thread/ActiveObject.cc
 	src/main.cpp
+	src/OpenGLRenderer.cpp
 )
 
 set(Space_HEADERS

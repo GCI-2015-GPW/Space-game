@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /// @file Logger.h
-/// @brief Defines the logger. 
+/// @brief Defines the logger.
 ///
 /// Usage: after calling Logger::initLogger(), you can use any of the logger macros
 /// @author Russell Greene
@@ -23,18 +23,18 @@ namespace Core
 /// Defines the severity levels for logging
 enum class eLogLevel : uint8_t
 {
-	DEBUG,		/// Debug messages, can be ignored by the user
-	MESSAGE,	/// General info, by default the only level printed to stdout
-	ERROR_,		/// Error message: possibly breaking issue
-	WARNING,	/// Warning message, for example a config issue
-	FATAL		/// Fatal error, no possible recovery
+	DEBUG,	/// Debug messages, can be ignored by the user
+	MESSAGE,  /// General info, by default the only level printed to stdout
+	ERROR_,   /// Error message: possibly breaking issue
+	WARNING,  /// Warning message, for example a config issue
+	FATAL	 /// Fatal error, no possible recovery
 };
 
 /// @brief Stream operator for eLogLevel. This is so we can print a eLogLevel
 ///
 /// @param stream stream to ouput level to
 /// @param level the eLogLevel to print
-/// 
+///
 /// @return the stream that has been used, after printing level
 template <typename Stream>
 Stream& operator<<(Stream& stream, eLogLevel level)
@@ -65,7 +65,8 @@ Stream& operator<<(Stream& stream, eLogLevel level)
 
 class Logger;
 
-/// the global logger pointer. This needs to be initalized with Logger::initLogger and cleaned up with Logger::cleanupLogger
+/// the global logger pointer. This needs to be initalized with Logger::initLogger and cleaned up
+/// with Logger::cleanupLogger
 extern Logger* gLogger_ptr;
 
 /// @brief The logger class. For the global logger, just use the gLogLevel macro
@@ -76,12 +77,12 @@ public:
 	static void initLogger() { gLogger_ptr = new Logger("Engine.log"); }
 	/// @brief deletes and flushes the global logger
 	static void cleanupLogger() { delete gLogger_ptr; }
-	/// @brief constructs a loger 
-	/// 
+	/// @brief constructs a loger
+	///
 	/// @param filename the filename for the log to be created
 	Logger(const std::string& filename);
 
-	/// @brief adds a sink to the Logger. 
+	/// @brief adds a sink to the Logger.
 	///
 	/// @param sink the sink to add.
 	void add(const std::function<void(const std::string& message, eLogLevel level,
@@ -100,7 +101,7 @@ private:
 }
 }
 
-/// @brief A macro that automatically creates a thread-sensitive log. 
+/// @brief A macro that automatically creates a thread-sensitive log.
 ///
 /// All the contents are garunteed to be comitted in on line. Uses the global logger.
 #define gLogLevel(level)                                                                        \
@@ -130,4 +131,3 @@ private:
 #define gLogWarning gLogLevel(WARNING)
 /// @brief uses gLogLevel with FATAL severity
 #define gLogFatal gLogLevel(FATAL)
-

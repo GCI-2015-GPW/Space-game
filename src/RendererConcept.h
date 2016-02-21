@@ -2,7 +2,6 @@
 // Use of this source code is governed by the MIT license that can be
 // found in the LICENSE file.
 
-
 /// @file RendererConcept.h
 /// @brief The concept for a renderer
 ///
@@ -13,7 +12,6 @@
 /// @author Russell Greene
 
 #pragma once
-
 
 // for concepts definition
 #include <boost/config.hpp>
@@ -27,7 +25,23 @@ auto concept Renderer<typename T>
 	Renderer();
 
 	std::string getRendererInfo();
+
+	// we need a shader class
+	Shader<typename T::Shader>;
+
+	// and a model class
+	Model<typename T::Model>;
 }
+
+auto concept Shader<typename T>
+{
+	Shader();
+
+	Shader(const std::string& vertSource, const std::string& fragSource,
+		   const std::string& geomSource = "");
+}
+
+auto concept Model<typename T> { Model(); }
 }
 
 #endif  // BOOST_HAS_CONCEPTS
