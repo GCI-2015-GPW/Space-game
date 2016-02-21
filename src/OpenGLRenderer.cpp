@@ -1,8 +1,17 @@
+// Copyright (c) 2016 The Space Game Developers. All rights reserved.
+// Use of this source code is governed by the MIT license that can be
+// found in the LICENSE file.
+
 #include "OpenGLRenderer.h"
 
 #include "log/Logger.h"
 
+#include <GLFW/glfw3.h>
+
 std::string Engine::OpenGLRenderer::getRendererInfo() { return "OpenGL Renderer"; }
+
+// Shader implementation
+////////////////////////
 Engine::OpenGLRenderer::Shader::Shader(const std::string& vertSource, const std::string& fragSource,
 									   const std::string& geomSource)
 {
@@ -61,4 +70,67 @@ Engine::OpenGLRenderer::Shader::Shader(const std::string& vertSource, const std:
 	// delete the sources so they will delete when the program is deleted
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragShader);
+}
+
+// Window implementation
+////////////////////////
+
+Engine::OpenGLRenderer::Window::Window()
+{
+	// initalize 
+	if(auto err = glfwInit() == 0)
+	{
+		gLogError << "Error encountered when initalizing GLFW. Error code: " << err;
+	}
+	
+	// set context hints
+	{
+		// context version
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+
+		// MSAA
+		glfwWindowHint(GLFW_SAMPLES, 8);
+
+		// To make MacOS happy
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+
+		// use core profile
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	}
+	
+	// create window
+	window = glfwCreateWindow(1280, 720, "Title", nullptr, nullptr);
+	
+	// make the gl commands use this window on this thread
+	glfwMakeContextCurrent(window);
+	
+	// you need this for a core profile
+	glewExperimental = true;
+	
+	// initalize GLEW (load the OpenGL functions)
+	if(auto err = glewInit() != GLEW_OK)
+	{
+		using namespace std::literals;
+		
+		gLogError << "Error initalizing GLEW: " << glewGetErrorString(err);
+	}
+	
+}
+
+void Engine::OpenGLRenderer::Window::setTitle(const std::string& newTitle)
+{
+	glfwSetWindowTitle(window, newTitle.c_str());
+}
+
+void Engine::OpenGLRenderer::Window::setSize(const glm::uvec2& newSize)
+{
+	glfwSetWindowSize(window, newSize.x, newSize.y);
+}
+
+
+void Engine::OpenGLRenderer::Window::update()
+{
+	glfwSwapBuffers(window);
+	glfwPollEvents();
 }

@@ -15,6 +15,7 @@
 
 #include <cstdint>
 #include <functional>
+#include <exception>
 
 namespace Engine
 {
@@ -125,8 +126,23 @@ private:
 #define gLogDebug gLogLevel(DEBUG)
 /// @brief uses gLogLevel with MESSAGE severity
 #define gLogMessage gLogLevel(MESSAGE)
-/// @brief uses gLogLevel with ERROR severity
-#define gLogError gLogLevel(ERROR_)
+/// @brief uses gLogLevel with ERROR severity. Also throws an error for your
+#define gLogError                                                                        \
+	for (struct                                                                                 \
+		 {                                                                                      \
+			 ::std::ostringstream message;                                                      \
+			 bool hasRan = false;                                                               \
+		 } ____data;                                                                            \
+		 !____data.hasRan; [&____data]()                                                        \
+		 {                                                                                      \
+			 ____data.hasRan = true;                                                            \
+			 ::Engine::Core::gLogger_ptr->write(                                                \
+				 ____data.message.str(), ::Engine::Core::eLogLevel::ERROR_, __FILE__, __LINE__);\
+			throw std::runtime_error(____data.message.str());                                            \
+		 }())                                                                                   \
+	____data.message
+
+
 /// @brief uses gLogLevel with WARNING severity
 #define gLogWarning gLogLevel(WARNING)
 /// @brief uses gLogLevel with FATAL severity

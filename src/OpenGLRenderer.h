@@ -16,28 +16,24 @@
 
 #include <string>
 
+struct GLFWwindow;
+
 namespace Engine
 {
 /// @brief Implements the Renderer concept defined in RendererConcept.h
 class OpenGLRenderer
 {
 public:
-	/// @brief default constructor
-	OpenGLRenderer() = default;
-
 	/// @brief gets a string describing the renderer
 	///
 	/// @return A string the details the renderer
-	std::string getRendererInfo();
+	static std::string getRendererInfo();
 
 	/// @brief The shader object for the OpenGLRenderer.
 	///
 	/// Implements the Shader concept in RendererConcept.h
 	struct Shader
 	{
-		/// @brief Default constructor
-		Shader() = default;
-
 		/// @brief Constructs the shader from source
 		///
 		/// @param vertSource The source code for the vertex shader
@@ -56,6 +52,30 @@ public:
 	struct Model
 	{
 		Model() = default;
+	};
+	
+	
+	/// @brief The window object for the OpenGLRenderer
+	///
+	/// Implements the Window concept in RendererConcept.h
+	struct Window
+	{
+		Window();
+		/// @brief set the title
+		///
+		/// @param newTitle the new title for the window
+		void setTitle(const std::string& newTitle);
+
+		/// @brief sets the size
+		///
+		/// @param newSize the new size for the window
+		void setSize(const glm::uvec2& newSize);
+		
+		/// @brief swaps the buffers for the window
+		void update();
+		
+		/// @brief the native GLFW window class. Not to be used in a cross-API situation.
+		GLFWwindow* window;
 	};
 };
 }

@@ -16,32 +16,46 @@
 // for concepts definition
 #include <boost/config.hpp>
 
+#include <glm/vec2.hpp>
+
 #ifdef BOOST_HAS_CONCEPTS
 
 namespace Engine
 {
 auto concept Renderer<typename T>
 {
-	Renderer();
-
-	std::string getRendererInfo();
+	static std::string getRendererInfo();
 
 	// we need a shader class
 	Shader<typename T::Shader>;
 
 	// and a model class
 	Model<typename T::Model>;
+	
+	// and a window class
+	Window<typename T::Window>;
 }
 
 auto concept Shader<typename T>
 {
-	Shader();
-
 	Shader(const std::string& vertSource, const std::string& fragSource,
 		   const std::string& geomSource = "");
 }
 
 auto concept Model<typename T> { Model(); }
+
+auto concept Window<typename T>
+{
+	Window();
+	
+	void setTitle(const std::string& newTitle);
+	
+	void setSize(const glm::uvec2& newSize);
+	
+	void update();
+}
+
 }
 
 #endif  // BOOST_HAS_CONCEPTS
+
