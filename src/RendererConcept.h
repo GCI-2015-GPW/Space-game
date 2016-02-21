@@ -1,4 +1,7 @@
-#pragma once
+// Copyright (c) 2016 The Space Game Developers. All rights reserved.
+// Use of this source code is governed by the MIT license that can be
+// found in the LICENSE file.
+
 
 /// @file RendererConcept.h
 /// @brief The concept for a renderer
@@ -8,6 +11,9 @@
 /// If a renderer cannot satsify this concept, then it could cause errors.
 ///
 /// @author Russell Greene
+
+#pragma once
+
 
 // for concepts definition
 #include <boost/config.hpp>
